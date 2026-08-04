@@ -9,6 +9,9 @@ jobs:
     name: Update Dependabot PR
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -19,7 +22,7 @@ jobs:
       - name: Update PR
         uses: StafflinePeoplePlus/dependabot-changesets@v0.1.5
         with:
-          owner: wobsoriano
+          owner: clerk-community
           repo: svelte-clerk
           pr-number: ${{ github.event.pull_request.number }}
           token: ${{ secrets.GITHUB_TOKEN }}
