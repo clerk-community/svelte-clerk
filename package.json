@@ -3,7 +3,7 @@
 	"version": "1.1.13",
 	"license": "MIT",
 	"packageManager": "pnpm@10.30.3",
-	"homepage": "https://github.com/wobsoriano/svelte-clerk#readme",
+	"homepage": "https://github.com/clerk-community/svelte-clerk#readme",
 	"keywords": [
 		"clerk",
 		"typescript",
@@ -16,9 +16,9 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/wobsoriano/svelte-clerk.git"
+		"url": "git+https://github.com/clerk-community/svelte-clerk.git"
 	},
-	"bugs": "https://github.com/wobsoriano/svelte-clerk/issues",
+	"bugs": "https://github.com/clerk-community/svelte-clerk/issues",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
