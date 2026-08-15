@@ -7,7 +7,8 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		experimental: {
-			remoteFunctions: true
+			remoteFunctions: true,
+			explicitEnvironmentVariables: true
 		}
 	},
 	// `script: true` transpiles TypeScript out of `<script>` blocks when packaging.

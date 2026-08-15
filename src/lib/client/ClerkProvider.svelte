@@ -20,6 +20,8 @@
 		...props
 	}: ClerkProviderProps & {
 		initialState?: InitialState;
+		__internal_clerkJSUrl?: string;
+		__internal_clerkJSVersion?: string;
 	} = $props();
 
 	// Extract only the script-loading options for loadClerkJSScript/loadClerkUIScript
