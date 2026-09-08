@@ -54,3 +54,15 @@ export const load = async ({ locals }) => {
 	};
 };
 ```
+
+Passing `initialState` to `<ClerkProvider>` (which the SvelteKit `ClerkProvider` does automatically from `page.data.initialState`) lets control components like [`<Show>`](/svelte/components#show) render the correct branch on the server and during hydration, before clerk-js has loaded in the browser.
+
+By default, `locals.auth()` treats sessions with a `pending` status as signed out. If you render `<Show treatPendingAsSignedOut={false}>` and want that to hold during SSR as well, pass the same option to `locals.auth()`:
+
+```ts
+export const load = async ({ locals }) => {
+	return {
+		...buildClerkProps(locals.auth({ treatPendingAsSignedOut: false }))
+	};
+};
+```
