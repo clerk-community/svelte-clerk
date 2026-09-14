@@ -83,3 +83,76 @@ test('Update Clerk options on the fly', async ({ page, baseURL }) => {
 	await po.page.locator('select').selectOption({ label: 'en' });
 	await expect(po.page.getByText('Welcome back! Please sign in to continue')).toBeVisible();
 });
+
+test.describe('<Show /> server-side rendering', () => {
+	const SIGNED_IN_TEXT = 'You are signed in!';
+	const SIGNED_OUT_TEXT = 'You are not signed in!';
+
+	function collectHydrationIssues(page: Parameters<typeof createPageObjects>[0]['page']) {
+		const issues: string[] = [];
+		page.on('console', (msg) => {
+			if (/hydrat/i.test(msg.text())) issues.push(`console: ${msg.text()}`);
+		});
+		page.on('pageerror', (err) => {
+			if (/hydrat/i.test(err.message)) issues.push(`pageerror: ${err.message}`);
+		});
+		return issues;
+	}
+
+	test('renders signed-out content in the server HTML', async ({ page }) => {
+		const response = await page.request.get('/');
+		expect(response.ok()).toBe(true);
+
+		const html = await response.text();
+		expect(html).toContain(SIGNED_OUT_TEXT);
+		expect(html).not.toContain(SIGNED_IN_TEXT);
+	});
+
+	test('renders signed-in content in the server HTML after sign in', async ({ page, baseURL }) => {
+		const po = createPageObjects({ page, baseURL });
+		await po.page.goToRelative('/sign-in');
+		await po.signIn.waitForMounted();
+		await po.signIn.signInWithEmailAndInstantPassword({
+			email: USER_EMAIL,
+			password: USER_PASSWORD
+		});
+		await po.expect.toBeSignedIn();
+
+		const response = await page.request.get('/');
+		expect(response.ok()).toBe(true);
+
+		const html = await response.text();
+		expect(html).toContain(SIGNED_IN_TEXT);
+		expect(html).not.toContain(SIGNED_OUT_TEXT);
+	});
+
+	test('hydrates without warnings when signed out', async ({ page, baseURL }) => {
+		const po = createPageObjects({ page, baseURL });
+		const issues = collectHydrationIssues(page);
+
+		await po.page.goToAppHome();
+		await po.page.waitForClerkJsLoaded();
+		await po.expect.toBeSignedOut();
+
+		await expect(page.getByText(SIGNED_OUT_TEXT)).toBeVisible();
+		expect(issues).toEqual([]);
+	});
+
+	test('hydrates without warnings when signed in', async ({ page, baseURL }) => {
+		const po = createPageObjects({ page, baseURL });
+		await po.page.goToRelative('/sign-in');
+		await po.signIn.waitForMounted();
+		await po.signIn.signInWithEmailAndInstantPassword({
+			email: USER_EMAIL,
+			password: USER_PASSWORD
+		});
+		await po.expect.toBeSignedIn();
+
+		const issues = collectHydrationIssues(page);
+		await po.page.goToAppHome();
+		await po.page.waitForClerkJsLoaded();
+
+		await expect(page.getByText(SIGNED_IN_TEXT)).toBeVisible();
+		expect(issues).toEqual([]);
+	});
+});
