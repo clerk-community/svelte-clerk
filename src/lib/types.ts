@@ -16,8 +16,13 @@ export interface BrowserClerk extends HeadlessBrowserClerk {
 export type PropsWithChildren<T, P> = T & { children?: Snippet<[P]> };
 
 // Match the Vue SDK pattern: re-add MultiDomainAndOrProxy (which includes isSatellite)
-// since IsomorphicClerkOptions strips it via Without<ClerkOptions, 'isSatellite'>
-export type ClerkProviderProps = Without<IsomorphicClerkOptions, 'domain' | 'proxyUrl'> &
+// since IsomorphicClerkOptions strips it via Without<ClerkOptions, 'isSatellite'>.
+// The internal clerk-js script props are not part of the public surface — they are
+// driven by the CLERK_JS_URL/CLERK_JS_VERSION environment variables instead.
+export type ClerkProviderProps = Without<
+	IsomorphicClerkOptions,
+	'domain' | 'proxyUrl' | '__internal_clerkJSUrl' | '__internal_clerkJSVersion'
+> &
 	MultiDomainAndOrProxy & {
 		children?: Snippet;
 	};
