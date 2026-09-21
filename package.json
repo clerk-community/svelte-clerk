@@ -121,8 +121,8 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"@clerk/backend": "^3.17.2",
-		"@clerk/shared": "^4.31.1",
+		"@clerk/backend": "^3.18.1",
+		"@clerk/shared": "^4.33.0",
 		"set-cookie-parser": "^3.0.1"
 	}
 }
