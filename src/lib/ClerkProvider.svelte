@@ -26,21 +26,23 @@
 		// while still keeping SvelteKit's router in sync (so hard-refresh at the new URL works).
 		const shallow = metadata?.__internal_metadata?.navigationType === 'internal';
 
-		// Clerk only hands us same-origin URLs, but they don't have to belong to this app
-		// (e.g. a path served by a proxy or another app on the same origin). SvelteKit 3
-		// rejects those instead of falling back to a full page load, so we do that ourselves.
-		const fallback = () => {
-			if (replace) {
-				window.location.replace(to);
-			} else {
-				window.location.assign(to);
-			}
-		};
-
 		if (isSvelteKit3OrLater) {
 			// SvelteKit 3 deprecates `pushState`/`replaceState` and the `replaceState` option.
 			const options = shallow ? { replace, shallow: true, state: {} } : { replace };
-			goto(to, options as GotoOptions).catch(fallback);
+			goto(to, options as GotoOptions).catch((error) => {
+				// Clerk only hands us same-origin URLs, but they don't have to belong to this app
+				// (e.g. a path served by a proxy or another app on the same origin). SvelteKit 3
+				// rejects those instead of falling back to a full page load, so we do that ourselves.
+				if (!(error instanceof Error) || !error.message.includes('navigation_route_missing')) {
+					throw error;
+				}
+
+				if (replace) {
+					window.location.replace(to);
+				} else {
+					window.location.assign(to);
+				}
+			});
 		} else if (shallow) {
 			if (replace) {
 				replaceState(to, {});
@@ -48,7 +50,7 @@
 				pushState(to, {});
 			}
 		} else {
-			goto(to, { replaceState: replace }).catch(fallback);
+			goto(to, { replaceState: replace });
 		}
 	}
 
