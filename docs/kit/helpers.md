@@ -66,3 +66,39 @@ export const load = async ({ locals }) => {
 	};
 };
 ```
+
+## `clerkEnvVars()`
+
+SvelteKit 3 only exposes environment variables that are [declared in `src/env.ts`](https://svelte.dev/docs/kit/environment-variables). `clerkEnvVars()` returns a definition for every variable Svelte Clerk reads, ready to spread into `defineEnvVars`. It is not needed on SvelteKit 2.
+
+```ts
+// src/env.ts
+import { defineEnvVars } from '@sveltejs/kit/env';
+import { clerkEnvVars } from 'svelte-clerk/env';
+
+export const variables = defineEnvVars({
+	...clerkEnvVars()
+});
+```
+
+It covers `CLERK_SECRET_KEY`, `CLERK_JWT_KEY`, `CLERK_API_VERSION`, `CLERK_WEBHOOK_SIGNING_SECRET`, and the `PUBLIC_CLERK_*` variables such as `PUBLIC_CLERK_PUBLISHABLE_KEY`, `PUBLIC_CLERK_SIGN_IN_URL` and `PUBLIC_CLERK_PROXY_URL`.
+
+Every variable is declared as optional, so only the ones you set are used. To have SvelteKit fail at startup when a key is missing, redeclare it without a schema:
+
+```ts
+export const variables = defineEnvVars({
+	...clerkEnvVars(),
+	CLERK_SECRET_KEY: {},
+	PUBLIC_CLERK_PUBLISHABLE_KEY: { public: true }
+});
+```
+
+If you would rather not use environment variables, pass the keys yourself: `withClerkHandler({ secretKey, publishableKey })` on the server and `<ClerkProvider publishableKey={...}>` in your layout.
+
+::: info
+In development, SvelteKit 3 logs an `env_module_deprecated` warning for `$env/dynamic/public` and `$env/dynamic/private`. Svelte Clerk still reads from those modules because their replacement does not exist in SvelteKit 2. The warning is harmless.
+:::
+
+::: tip
+SvelteKit 3 requires an explicit opt-in to redirect to another origin. If your sign-in page is hosted elsewhere, such as the Account Portal, use `redirect(307, signInUrl, { external: true })`.
+:::
