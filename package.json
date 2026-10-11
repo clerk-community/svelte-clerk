@@ -33,7 +33,8 @@
 		"docs:dev": "vitepress dev docs",
 		"docs:build": "vitepress build docs",
 		"docs:preview": "vitepress preview docs",
-		"test:e2e": "playwright test",
+		"test:e2e": "pnpm package && node test-apps/install.js && playwright test",
+		"test:compat": "pnpm package && node test-apps/install.js && playwright test -c playwright.compat.config.ts",
 		"test": "npm run test:e2e"
 	},
 	"exports": {
@@ -53,7 +54,10 @@
 			"types": "./dist/webhooks.d.ts",
 			"svelte": "./dist/webhooks.js"
 		},
-		"./env": "./dist/env.d.ts"
+		"./env": {
+			"types": "./dist/env.d.ts",
+			"default": "./dist/env.js"
+		}
 	},
 	"files": [
 		"dist",
@@ -61,7 +65,7 @@
 		"!dist/**/*.spec.*"
 	],
 	"peerDependencies": {
-		"@sveltejs/kit": "^2.20.0",
+		"@sveltejs/kit": "^2.20.0 || ^3.0.0",
 		"svelte": "^5.29.0"
 	},
 	"peerDependenciesMeta": {

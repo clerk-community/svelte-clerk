@@ -1,0 +1,4 @@
+# The packed library, written by ../install.js. Its hash changes with every build,
+# so the lockfile that records it is not committed either.
+svelte-clerk.tgz
+pnpm-lock.yaml

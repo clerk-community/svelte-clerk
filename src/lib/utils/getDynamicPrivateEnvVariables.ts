@@ -1,7 +1,9 @@
 import { env } from '$env/dynamic/private';
 
 function getEnvVariable(name: string, defaultValue?: string): string | undefined {
-	return name in env ? env[name] : defaultValue;
+	// On SvelteKit 3 a variable declared in `src/env.ts` but left unset is present with an
+	// `undefined` value, so checking for the key alone would skip the default.
+	return (env as Record<string, string | undefined>)[name] ?? defaultValue;
 }
 
 export function getDynamicPrivateEnvVariables() {

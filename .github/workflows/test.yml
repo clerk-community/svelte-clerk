@@ -54,6 +54,10 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
 
+      # Runs against a SvelteKit 2 and a SvelteKit 3 app with placeholder keys.
+      - name: Run SvelteKit compatibility tests
+        run: pnpm test:compat
+
       - name: Run tests
         run: pnpm test
 
