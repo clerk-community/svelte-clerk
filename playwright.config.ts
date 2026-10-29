@@ -1,7 +1,7 @@
 import '@dotenvx/dotenvx/config';
 import { defineConfig, devices } from '@playwright/test';
 
-// The SvelteKit 3 app is installed by `pnpm test:e2e`, which packs the library into it first.
+// Run `pnpm test:setup` first to pack the library into the SvelteKit 3 app.
 export default defineConfig({
 	webServer: [
 		{

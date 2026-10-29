@@ -28,8 +28,8 @@
 
 		if (isSvelteKit3OrLater) {
 			// SvelteKit 3 deprecates `pushState`/`replaceState` and the `replaceState` option.
-			const options = shallow ? { replace, shallow: true, state: {} } : { replace };
-			goto(to, options as GotoOptions).catch((error) => {
+			// The cast is needed because the types come from SvelteKit 2, which has neither option.
+			goto(to, { replace, shallow } as GotoOptions).catch((error) => {
 				// Clerk only hands us same-origin URLs, but they don't have to belong to this app
 				// (e.g. a path served by a proxy or another app on the same origin). SvelteKit 3
 				// rejects those instead of falling back to a full page load, so we do that ourselves.
