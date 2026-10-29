@@ -13,6 +13,7 @@
 		setClerkJSLoadingErrorPackageName
 	} from '@clerk/shared/loadClerkJsScript';
 	import { watch } from './utils.svelte';
+	import { SDK_METADATA } from '$lib/utils/sdkMetadata.js';
 
 	const {
 		children,
@@ -22,15 +23,19 @@
 		initialState?: InitialState;
 	} = $props();
 
+	const sdkMetadata = $derived(props.sdkMetadata ?? SDK_METADATA);
+
 	// Extract only the script-loading options for loadClerkJSScript/loadClerkUIScript
 	const scriptOpts = $derived({
 		publishableKey: props.publishableKey,
 		__internal_clerkJSUrl: props.__internal_clerkJSUrl,
 		__internal_clerkJSVersion: props.__internal_clerkJSVersion,
+		__internal_clerkUIUrl: props.__internal_clerkUIUrl,
+		__internal_clerkUIVersion: props.__internal_clerkUIVersion,
 		proxyUrl: typeof props.proxyUrl === 'string' ? props.proxyUrl : undefined,
 		domain: typeof props.domain === 'string' ? props.domain : undefined,
 		nonce: props.nonce,
-		sdkMetadata: props.sdkMetadata
+		sdkMetadata
 	} as LoadClerkJSScriptOptions);
 
 	let clerk = $state<HeadlessBrowserClerk | BrowserClerk | null>(null);
@@ -77,6 +82,7 @@
 		clerk = window.Clerk;
 		await clerk.load({
 			...props,
+			sdkMetadata,
 			ui: { ...uiProp, ClerkUI: clerkUICtorPromise }
 		} as unknown as ClerkOptions);
 

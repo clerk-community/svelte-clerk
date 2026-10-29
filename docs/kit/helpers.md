@@ -81,7 +81,7 @@ export const variables = defineEnvVars({
 });
 ```
 
-It covers `CLERK_SECRET_KEY`, `CLERK_JWT_KEY`, `CLERK_API_VERSION`, `CLERK_WEBHOOK_SIGNING_SECRET`, and the `PUBLIC_CLERK_*` variables such as `PUBLIC_CLERK_PUBLISHABLE_KEY`, `PUBLIC_CLERK_SIGN_IN_URL` and `PUBLIC_CLERK_PROXY_URL`.
+It covers `CLERK_SECRET_KEY`, `CLERK_JWT_KEY`, `CLERK_API_URL`, `CLERK_API_VERSION`, `CLERK_WEBHOOK_SIGNING_SECRET`, and the `PUBLIC_CLERK_*` variables such as `PUBLIC_CLERK_PUBLISHABLE_KEY`, `PUBLIC_CLERK_SIGN_IN_URL` and `PUBLIC_CLERK_PROXY_URL`.
 
 Every variable is declared as optional, so only the ones you set are used. To have SvelteKit fail at startup when a key is missing, redeclare it without a schema:
 

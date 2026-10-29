@@ -60,6 +60,7 @@ export function clerkEnvVars() {
 	return {
 		CLERK_SECRET_KEY: privateVar('Clerk secret key.'),
 		CLERK_JWT_KEY: privateVar('PEM public key used for networkless session token verification.'),
+		CLERK_API_URL: privateVar('Clerk Backend API URL.'),
 		CLERK_API_VERSION: privateVar('Clerk Backend API version.'),
 		CLERK_WEBHOOK_SIGNING_SECRET: privateVar('Signing secret used by `verifyWebhook()`.'),
 		PUBLIC_CLERK_PUBLISHABLE_KEY: publicVar('Clerk publishable key.'),
@@ -78,8 +79,10 @@ export function clerkEnvVars() {
 		),
 		PUBLIC_CLERK_JS_URL: publicVar('URL to load clerk-js from.'),
 		PUBLIC_CLERK_JS_VERSION: publicVar('Version of clerk-js to load.'),
-		PUBLIC_CLERK_API_URL: publicVar('Clerk Backend API URL.'),
-		PUBLIC_CLERK_API_VERSION: publicVar('Clerk Backend API version.'),
+		PUBLIC_CLERK_UI_URL: publicVar('URL to load the Clerk UI from.'),
+		PUBLIC_CLERK_UI_VERSION: publicVar('Version of the Clerk UI to load.'),
+		PUBLIC_CLERK_API_URL: publicVar('Deprecated. Use `CLERK_API_URL`.'),
+		PUBLIC_CLERK_API_VERSION: publicVar('Deprecated. Use `CLERK_API_VERSION`.'),
 		PUBLIC_CLERK_TELEMETRY_DISABLED: publicVar('Set to `1` to disable Clerk telemetry.'),
 		PUBLIC_CLERK_TELEMETRY_DEBUG: publicVar('Set to `1` to log telemetry events to the console.')
 	};
