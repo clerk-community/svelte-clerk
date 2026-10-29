@@ -2,6 +2,7 @@ import { createClerkClient } from '@clerk/backend';
 
 import { API_URL, API_VERSION, TELEMETRY_DEBUG, TELEMETRY_DISABLED } from './constants.js';
 import { getDynamicPrivateEnvVariables } from '$lib/utils/getDynamicPrivateEnvVariables';
+import { SDK_METADATA } from '$lib/utils/sdkMetadata.js';
 
 let clerkClientSingleton: ReturnType<typeof createClerkClient> | undefined;
 
@@ -15,6 +16,8 @@ function getClerkClient() {
 		apiUrl: API_URL,
 		apiVersion: API_VERSION,
 		jwtKey,
+		userAgent: `${SDK_METADATA.name}@${SDK_METADATA.version}`,
+		sdkMetadata: SDK_METADATA,
 		telemetry: {
 			disabled: TELEMETRY_DISABLED,
 			debug: TELEMETRY_DEBUG

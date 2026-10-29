@@ -29,6 +29,8 @@ export function mergeWithPublicEnvVariables(
 		signUpFallbackRedirectUrl,
 		__internal_clerkJSUrl,
 		__internal_clerkJSVersion,
+		__internal_clerkUIUrl,
+		__internal_clerkUIVersion,
 		proxyUrl,
 		domain,
 		isSatellite,
@@ -49,9 +51,13 @@ export function mergeWithPublicEnvVariables(
 		__internal_clerkJSUrl: __internal_clerkJSUrl || getDynamicPublicEnvVariables().clerkJSUrl,
 		__internal_clerkJSVersion:
 			__internal_clerkJSVersion || getDynamicPublicEnvVariables().clerkJSVersion,
+		__internal_clerkUIUrl: __internal_clerkUIUrl || getDynamicPublicEnvVariables().clerkUIUrl,
+		__internal_clerkUIVersion:
+			__internal_clerkUIVersion || getDynamicPublicEnvVariables().clerkUIVersion,
 		proxyUrl: proxyUrl || getDynamicPublicEnvVariables().proxyUrl,
 		domain: domain || getDynamicPublicEnvVariables().domain,
-		isSatellite: clerkInitOptions.isSatellite ?? isTruthy(getDynamicPublicEnvVariables().isSatellite),
+		isSatellite:
+			clerkInitOptions.isSatellite ?? isTruthy(getDynamicPublicEnvVariables().isSatellite),
 		telemetry: telemetry || {
 			debug: getDynamicPublicEnvVariables().telemetryDebug,
 			disabled: getDynamicPublicEnvVariables().telemetryDisabled

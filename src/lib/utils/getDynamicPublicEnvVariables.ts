@@ -20,6 +20,8 @@ export function getDynamicPublicEnvVariables() {
 		signUpUrl: getEnvVariable('PUBLIC_CLERK_SIGN_UP_URL'),
 		clerkJSUrl: getEnvVariable('PUBLIC_CLERK_JS_URL'),
 		clerkJSVersion: getEnvVariable('PUBLIC_CLERK_JS_VERSION'),
+		clerkUIUrl: getEnvVariable('PUBLIC_CLERK_UI_URL'),
+		clerkUIVersion: getEnvVariable('PUBLIC_CLERK_UI_VERSION'),
 		signInForceRedirectUrl: getEnvVariable('PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL'),
 		signUpForceRedirectUrl: getEnvVariable('PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL'),
 		signInFallbackRedirectUrl: getEnvVariable('PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL'),

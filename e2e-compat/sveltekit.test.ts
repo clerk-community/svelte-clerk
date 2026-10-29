@@ -1,15 +1,20 @@
 import { createHmac } from 'node:crypto';
 import { expect, test, type Page } from '@playwright/test';
-import { PUBLISHABLE_KEY, SIGN_IN_URL, WEBHOOK_SIGNING_SECRET } from './env';
+import { readFileSync } from 'node:fs';
+import { CLERK_UI_URL, PUBLISHABLE_KEY, SIGN_IN_URL, WEBHOOK_SIGNING_SECRET } from './env';
+
+const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 type RouterFn = (to: string, metadata?: Record<string, unknown>) => unknown;
 
 declare global {
 	interface Window {
-		__clerkOptions?: { publishableKey: string; signInUrl: string } & Record<
-			'routerPush' | 'routerReplace',
-			RouterFn
-		>;
+		__clerkOptions?: {
+			publishableKey: string;
+			signInUrl: string;
+			__internal_clerkUIUrl?: string;
+			sdkMetadata?: { name: string; version: string };
+		} & Record<'routerPush' | 'routerReplace', RouterFn>;
 		__sameDocument?: boolean;
 	}
 }
@@ -68,11 +73,23 @@ test('passes public environment variables to clerk-js', async ({ page }) => {
 
 	const options = await page.evaluate(() => ({
 		publishableKey: window.__clerkOptions?.publishableKey,
-		signInUrl: window.__clerkOptions?.signInUrl
+		signInUrl: window.__clerkOptions?.signInUrl,
+		clerkUIUrl: window.__clerkOptions?.__internal_clerkUIUrl
 	}));
-	expect(options).toEqual({ publishableKey: PUBLISHABLE_KEY, signInUrl: SIGN_IN_URL });
+	expect(options).toEqual({
+		publishableKey: PUBLISHABLE_KEY,
+		signInUrl: SIGN_IN_URL,
+		clerkUIUrl: CLERK_UI_URL
+	});
 
 	await expect(page.getByText('You are not signed in!')).toBeVisible();
+});
+
+test('identifies the SDK to clerk-js', async ({ page }) => {
+	await loadApp(page);
+
+	const sdkMetadata = await page.evaluate(() => window.__clerkOptions?.sdkMetadata);
+	expect(sdkMetadata).toEqual({ name: 'svelte-clerk', version });
 });
 
 test('routerPush navigates between routes without a page load', async ({ page, baseURL }) => {

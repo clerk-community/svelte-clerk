@@ -8,7 +8,8 @@ function getEnvVariable(name: string, defaultValue?: string): string | undefined
 
 export function getDynamicPrivateEnvVariables() {
 	return {
-		apiVersion: getEnvVariable('CLERK_API_VERSION', 'v1'),
+		apiUrl: getEnvVariable('CLERK_API_URL'),
+		apiVersion: getEnvVariable('CLERK_API_VERSION'),
 		secretKey: getEnvVariable('CLERK_SECRET_KEY'),
 		jwtKey: getEnvVariable('CLERK_JWT_KEY')
 	};
