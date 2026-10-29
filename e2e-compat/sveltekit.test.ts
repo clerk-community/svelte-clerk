@@ -14,10 +14,7 @@ declare global {
 			signInUrl: string;
 			__internal_clerkUIUrl?: string;
 			sdkMetadata?: { name: string; version: string };
-		} & Record<
-			'routerPush' | 'routerReplace',
-			RouterFn
-		>;
+		} & Record<'routerPush' | 'routerReplace', RouterFn>;
 		__sameDocument?: boolean;
 	}
 }
