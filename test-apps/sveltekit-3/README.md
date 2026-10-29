@@ -7,8 +7,9 @@ tests against this app and the SvelteKit 2 app at the repository root.
 Run it from the repository root:
 
 ```sh
-pnpm test:compat
+pnpm test:setup && pnpm test:compat
 ```
 
-That builds and packs the library, installs it here, and runs the suite. No Clerk account is
-needed: the tests use placeholder keys and stub clerk-js in the browser.
+`test:setup` builds and packs the library and installs it here, so rerun it after changing the
+library. `test:compat` runs the suite. No Clerk account is needed: the tests use placeholder keys
+and stub clerk-js in the browser.

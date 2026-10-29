@@ -51,6 +51,9 @@ jobs:
       - name: Build module
         run: pnpm build
 
+      - name: Install test apps
+        run: node test-apps/install.js
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
 
@@ -59,7 +62,7 @@ jobs:
         run: pnpm test:compat
 
       - name: Run tests
-        run: pnpm test
+        run: pnpm test:e2e
 
       - name: Upload html report as artifact
         uses: actions/upload-artifact@v4

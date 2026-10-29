@@ -33,9 +33,10 @@
 		"docs:dev": "vitepress dev docs",
 		"docs:build": "vitepress build docs",
 		"docs:preview": "vitepress preview docs",
-		"test:e2e": "pnpm package && node test-apps/install.js && playwright test",
-		"test:compat": "pnpm package && node test-apps/install.js && playwright test -c playwright.compat.config.ts",
-		"test": "npm run test:e2e"
+		"test:setup": "pnpm package && node test-apps/install.js",
+		"test:e2e": "playwright test",
+		"test:compat": "playwright test -c playwright.compat.config.ts",
+		"test": "pnpm test:setup && pnpm test:compat && pnpm test:e2e"
 	},
 	"exports": {
 		".": {
