@@ -1,4 +1,4 @@
-import { type Handle, type RequestEvent } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 import { clerkClient } from './clerkClient.js';
 import * as constants from './constants.js';
 import {
@@ -18,8 +18,16 @@ import { getDynamicPublicEnvVariables } from '$lib/utils/getDynamicPublicEnvVari
 import { isTruthy } from '@clerk/shared/underscore';
 import type { SessionAuthObject } from '@clerk/backend';
 import { patchRequest } from './patchRequest.js';
+import { isSvelteKit3OrLater } from '$lib/utils/kitVersion.js';
 
 export type ClerkSvelteKitMiddlewareOptions = AuthenticateRequestOptions & { debug?: boolean };
+
+// SvelteKit exports `Handle` from `@sveltejs/kit` in v2 and from `@sveltejs/kit/hooks` in v3,
+// so we describe the hook structurally to stay assignable to both.
+type Handle = (input: {
+	event: RequestEvent;
+	resolve: (event: RequestEvent) => Response | Promise<Response>;
+}) => Promise<Response>;
 
 export function withClerkHandler(middlewareOptions?: ClerkSvelteKitMiddlewareOptions): Handle {
 	return async ({ event, resolve }) => {
@@ -30,10 +38,17 @@ export function withClerkHandler(middlewareOptions?: ClerkSvelteKitMiddlewareOpt
 			console.log('[svelte-clerk] ' + JSON.stringify(clerkWebRequest.toJSON()));
 		}
 
+		const secretKey = options?.secretKey ?? constants.SECRET_KEY;
+		const publishableKey = options?.publishableKey ?? constants.PUBLISHABLE_KEY;
+
+		if (isSvelteKit3OrLater && (!secretKey || !publishableKey)) {
+			throw new Error(missingKeysOnSvelteKit3);
+		}
+
 		const requestState = await clerkClient.authenticateRequest(clerkWebRequest, {
 			...options,
-			secretKey: options?.secretKey ?? constants.SECRET_KEY,
-			publishableKey: options?.publishableKey ?? constants.PUBLISHABLE_KEY,
+			secretKey,
+			publishableKey,
 			...handleMultiDomainAndProxy(clerkWebRequest, options),
 			acceptsToken: TokenType.SessionToken
 		});
@@ -104,7 +119,10 @@ function decorateHeaders(event: RequestEvent, headers: Headers) {
 				event.cookies.set(name, value, cookieOptions);
 			} else {
 				// For other cookies, use the standard approach
-				event.cookies.set(name, value, options as CookieSerializerOptions & { path: string });
+				event.cookies.set(name, value, {
+					...options,
+					path: options.path || '/'
+				} as CookieSerializerOptions & { path: string });
 			}
 		});
 		headers.delete('set-cookie');
@@ -167,6 +185,22 @@ function handleMultiDomainAndProxy(clerkRequest: ClerkRequest, opts: Authenticat
 		signUpUrl
 	};
 }
+
+export const missingKeysOnSvelteKit3 = `
+[svelte-clerk] Missing Clerk secret key or publishable key.
+
+SvelteKit 3 only exposes environment variables that are declared in src/env.ts.
+Declare the Clerk variables there, and make sure CLERK_SECRET_KEY and
+PUBLIC_CLERK_PUBLISHABLE_KEY are set in your environment:
+
+   import { defineEnvVars } from '@sveltejs/kit/env';
+   import { clerkEnvVars } from 'svelte-clerk/env';
+
+   export const variables = defineEnvVars({ ...clerkEnvVars() });
+
+Alternatively, pass the keys directly
+   e.g. export const handle = withClerkHandler({ secretKey, publishableKey });
+   `;
 
 export const missingDomainAndProxy = `
 Missing domain and proxyUrl. A satellite application needs to specify a domain or a proxyUrl.

@@ -5,6 +5,10 @@ Svelte Clerk is the easiest way to add authentication and user management to you
 > [!IMPORTANT]
 > This package is unofficial and not affiliated with Clerk. If you have issues or suggestions, please open an issue in this repository.
 
+## Compatibility
+
+Svelte Clerk supports Svelte 5 and SvelteKit 2 and 3. SvelteKit 3 needs one extra step: [declare the Clerk environment variables in `src/env.ts`](https://svelte-clerk.netlify.app/kit/quickstart.html#sveltekit-3).
+
 ## Documentation
 
 For detailed setup and usage instructions, please visit the [documentation](https://svelte-clerk.netlify.app).

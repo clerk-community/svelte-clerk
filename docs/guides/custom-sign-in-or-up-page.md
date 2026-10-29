@@ -20,6 +20,8 @@ Create `src/routes/sign-in/[...sign-in]/+page.svelte`:
 
 The rest route (`[...sign-in]`) supports Clerk's internal sub-routes, such as multi-step auth paths.
 
+On SvelteKit 3, every Clerk component that uses path-based routing needs a rest route, including `<SignUp />`, `<UserProfile />`, and `<OrganizationProfile />`. Without one, an internal step such as `/sign-in/factor-one` loads a 404 page, because SvelteKit 3 only navigates to URLs that match a route.
+
 ## 2. Configure redirect environment variables
 
 Add these values to your `.env` file:

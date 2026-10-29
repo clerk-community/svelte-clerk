@@ -21,6 +21,22 @@ PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxx
 CLERK_SECRET_KEY=sk_test_xxxxxxx
 ```
 
+#### SvelteKit 3
+
+SvelteKit 3 only exposes environment variables that are [declared in `src/env.ts`](https://svelte.dev/docs/kit/environment-variables). Declare the ones Clerk reads by spreading [`clerkEnvVars()`](/kit/helpers#clerkenvvars) into `defineEnvVars`:
+
+```ts
+// src/env.ts
+import { defineEnvVars } from '@sveltejs/kit/env';
+import { clerkEnvVars } from 'svelte-clerk/env';
+
+export const variables = defineEnvVars({
+	...clerkEnvVars()
+});
+```
+
+Without this, requests fail with a `Missing Clerk secret key or publishable key` error. Skip this step on SvelteKit 2.
+
 ### 3. Configure server handler
 
 This handler will authenticate requests and gives you access to the [`Auth`](https://clerk.com/docs/references/nextjs/auth-object#auth-object) object via `event.locals.auth()` inside your server loaders and actions.
